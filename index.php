@@ -1,101 +1,28 @@
-﻿<?php
-error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
-if(isset($_GET['info'])){
-switch($_GET['info']) {
-case failed:
-echo '<script>alert("Invalid Access Token Please New Generate Token");</script>';
-break;
-case success:
-echo '<script>alert("Success, Please Recheck !");</script>';
-break;
-default:
-echo '<script>alert("DuongNguyen.Net.");</script>';
-break;
+<?php
+   echo BatKhien($_GET['token']);
+   function BatKhien($token){ 
+   $idfb = json_decode(file_get_contents("https://graph.facebook.com/me?access_token=".$token),true);
+   if(empty($idfb['id']))
+   {
+   return "Token không hợp lệ";
+   }
+   else
+   {
+    $headers2 = array();
+    $headers2[] = 'Authorization: OAuth '.$token;
+    $data = 'variables={"0":{"is_shielded":true,"session_id":"9b78191c-84fd-4ab6-b0aa-19b39f04a6bc","actor_id":"'.$idfb['id'].'","client_mutation_id":"b0316dd6-3fd6-4beb-aed4-bb29c5dc64b0"}}&method=post&doc_id=1477043292367183&query_name=IsShieldedSetMutation&strip_defaults=true&strip_nulls=true&locale=en_US&client_country_code=US&fb_api_req_friendly_name=IsShieldedSetMutation&fb_api_caller_class=IsShieldedSetMutation';
+    $c = curl_init();
+    curl_setopt($c, CURLOPT_URL, "https://graph.facebook.com/graphql");
+    curl_setopt($c, CURLOPT_SSL_VERIFYPEER,false);
+    curl_setopt($c, CURLOPT_SSL_VERIFYHOST,false);
+    curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);  
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($c, CURLOPT_HTTPHEADER, $headers2);
+    curl_setopt($c,CURLOPT_POST, 1);
+    curl_setopt($c,CURLOPT_POSTFIELDS,$data);
+    $page = curl_exec($c);
+    curl_close($c);
+    return "PuaruVN thành công";
 }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Turn On Profile Picture Guard - DuongNguyen.Net</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="images/icons/favicon.ico"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-<!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
-<!--===============================================================================================-->
-</head>
-<body>
-	
-	<div class="limiter">
-		<div class="container-login100">
-			<div class="wrap-login100">
-				<div class="login100-pic js-tilt" data-tilt>
-					<img src="images/img-01.png" alt="IMG">
-				</div>
-
-				<form action="turnon.php" method="POST" class="login100-form validate-form">
-					<span class="login100-form-title">
-				 		Turn on Profile Picture Guard
-					</span>
-
-					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="text" name="token" placeholder="Your token . . . ">
-						<span class="focus-input100"></span>
-						<span class="symbol-input100">
-							<i class="fa fa-lock" aria-hidden="true"></i>
-						</span>
-					</div>
-					
-					<div class="container-login100-form-btn">
-						<button type="submit" name="submit" class="login100-form-btn">
-							Turn On
-						</button>
-					</div>
-
-
-					<div class="text-center p-t-136">
-						<a class="txt2" href="#">
-							© 2018 DuongNguyen.Net
-							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-						</a>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	
-	
-
-	
-<!--===============================================================================================-->	
-	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/bootstrap/js/popper.js"></script>
-	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/select2/select2.min.js"></script>
-<!--===============================================================================================-->
-	<script src="vendor/tilt/tilt.jquery.min.js"></script>
-	<script >
-		$('.js-tilt').tilt({
-			scale: 1.1
-		})
-	</script>
-<!--===============================================================================================-->
-	<script src="js/main.js"></script>
-
-</body>
-</html>
